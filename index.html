@@ -1,0 +1,285 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>ConnectHub — دخول / تسجيل</title>
+  <style>
+    body {
+      font-family: 'Arial', sans-serif;
+      background-color: #f7f7f7;
+      margin: 0;
+      padding: 0;
+      display: flex;
+      flex-direction: column;
+      height: 100vh;
+      overflow: hidden;
+    }
+
+    header {
+      background-color: #25D366;
+      color: white;
+      text-align: center;
+      padding: 10px;
+      font-size: 18px;
+      font-weight: bold;
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      z-index: 1000;
+    }
+
+    .auth-wrapper {
+      margin-top: 70px;
+      flex: 1;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+      overflow-y: auto;
+    }
+
+    .auth-card {
+      background-color: #fff;
+      width: 100%;
+      max-width: 360px;
+      border-radius: 20px;
+      box-shadow: 0 6px 16px rgba(0,0,0,0.12);
+      padding: 25px;
+      text-align: center;
+    }
+
+    .tabs {
+      display: flex;
+      gap: 5px;
+      margin-bottom: 20px;
+      background: #f0f0f0;
+      border-radius: 12px;
+      padding: 4px;
+    }
+    .tab-btn {
+      flex: 1;
+      border: none;
+      border-radius: 10px;
+      padding: 8px 0;
+      cursor: pointer;
+      font-size: 14px;
+      background: transparent;
+      transition: all 0.3s;
+    }
+    .tab-btn.active {
+      background: #25D366;
+      color: #fff;
+      font-weight: bold;
+    }
+
+    .form-title {
+      color: #25D366;
+      font-size: 20px;
+      margin-bottom: 15px;
+    }
+
+    .field {
+      margin-bottom: 12px;
+      display: flex;
+      justify-content: center;
+    }
+    .field input {
+      width: 85%;
+      padding: 10px;
+      border: 1px solid #ddd;
+      border-radius: 25px;
+      font-size: 14px;
+      text-align: center;
+      background: #fafafa;
+      transition: border-color 0.2s, box-shadow 0.2s;
+    }
+    .field input:focus {
+      border-color: #25D366;
+      box-shadow: 0 0 0 3px rgba(37,211,102,0.15);
+      outline: none;
+    }
+
+    .error {
+      font-size: 12px;
+      color: #e53935;
+      margin-top: 4px;
+      text-align: center;
+    }
+    .hidden { display: none; }
+
+    .action-button {
+      width: 85%;
+      background-color: #25D366;
+      color: white;
+      border: none;
+      padding: 12px;
+      border-radius: 25px;
+      cursor: pointer;
+      font-size: 15px;
+      font-weight: bold;
+      margin-top: 8px;
+      transition: background 0.2s, transform 0.1s;
+    }
+    .action-button:hover { background-color: #1e8e57; }
+    .action-button:active { transform: scale(0.98); }
+
+    .links {
+      margin-top: 10px;
+      font-size: 13px;
+    }
+    .links a { color: #25D366; text-decoration: none; cursor: pointer; }
+    .links a:hover { text-decoration: underline; }
+
+    .banner {
+      display: none;
+      padding: 10px;
+      border-radius: 10px;
+      margin-bottom: 12px;
+      font-size: 13px;
+      font-weight: bold;
+    }
+    .banner.success { display: block; background: #e8f5e9; color: #2e7d32; }
+    .banner.error { display: block; background: #ffebee; color: #c62828; }
+
+    .dark-mode { background-color: #222; color: #fff; }
+    .dark-mode header { background-color: #444; }
+    .dark-mode .auth-card { background-color: #333; color: #fff; }
+    .dark-mode .tab-btn { color: #ccc; }
+    .dark-mode .tab-btn.active { background: #25D366; color: #fff; }
+    .dark-mode .field input { background: #444; color: #fff; border-color: #666; }
+  </style>
+</head>
+<body>
+  <header>ConnectHub</header>
+
+  <main class="auth-wrapper">
+    <section class="auth-card">
+      <div id="banner" class="banner"></div>
+
+      <div class="tabs">
+        <button class="tab-btn active" data-tab="login">تسجيل الدخول</button>
+        <button class="tab-btn" data-tab="register">تسجيل</button>
+        <button class="tab-btn" data-tab="forgot">نسيت كلمة السر</button>
+      </div>
+
+      <!-- تسجيل الدخول -->
+      <div id="tab-login" class="tab-panel">
+        <h2 class="form-title">دخول</h2>
+        <div class="field"><input id="loginEmail" type="email" placeholder="البريد الإلكتروني" required /></div>
+        <div class="field"><input id="loginPassword" type="password" placeholder="كلمة المرور" required /></div>
+        <button class="action-button" id="loginBtn">دخول</button>
+        <div class="links"><a data-tab-switch="register">إنشاء حساب</a> · <a data-tab-switch="forgot">نسيت كلمة السر؟</a></div>
+      </div>
+
+      <!-- تسجيل -->
+      <div id="tab-register" class="tab-panel hidden">
+        <h2 class="form-title">تسجيل حساب</h2>
+        <div class="field"><input id="firstName" type="text" placeholder="الاسم الأول" required /></div>
+        <div class="field"><input id="lastName" type="text" placeholder="الاسم الأخير" required /></div>
+        <div class="field"><input id="regEmail" type="email" placeholder="البريد الإلكتروني" required /></div>
+        <div class="field"><input id="dob" type="date" required /></div>
+        <div class="field"><input id="regPassword" type="password" placeholder="كلمة المرور" required /></div>
+        <div class="error hidden" id="passError">كلمة المرور قصيرة</div>
+        <div class="field"><input id="regConfirm" type="password" placeholder="إعادة كلمة المرور" required /></div>
+        <div class="error hidden" id="matchError">كلمة المرور غير متطابقة</div>
+        <button class="action-button" id="registerBtn">تسجيل</button>
+        <div class="links"><a data-tab-switch="login">لديك حساب؟ دخول</a></div>
+      </div>
+
+      <!-- نسيت كلمة السر -->
+      <div id="tab-forgot" class="tab-panel hidden">
+        <h2 class="form-title">استعادة كلمة المرور</h2>
+        <div class="field"><input id="resetEmail" type="email" placeholder="أدخل بريدك" required /></div>
+        <button class="action-button" id="resetBtn">إرسال رابط</button>
+        <div class="links"><a data-tab-switch="login">رجوع</a></div>
+      </div>
+    </section>
+  </main>
+
+  <!-- Firebase -->
+  <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-auth-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-database-compat.js"></script>
+
+  <script>
+    const firebaseConfig = {
+      apiKey: "AIzaSyA_ewre_7QeqzvjqhAudjdCQDbV18NKxvo",
+      authDomain: "connecthub202.firebaseapp.com",
+      databaseURL: "https://connecthub202-default-rtdb.firebaseio.com",
+      projectId: "connecthub202",
+      storageBucket: "connecthub202.appspot.com",
+      messagingSenderId: "621332737675",
+      appId: "1:621332737675:web:5d9af805be2ea48783ee8e",
+      measurementId: "G-1JZWZLCY0L"
+    };
+
+    firebase.initializeApp(firebaseConfig);
+    const auth = firebase.auth();
+    const db = firebase.database();
+
+    const tabs = document.querySelectorAll('.tab-btn');
+    const panels = {
+      login: document.getElementById('tab-login'),
+      register: document.getElementById('tab-register'),
+      forgot: document.getElementById('tab-forgot')
+    };
+    function switchTo(tab){
+      tabs.forEach(b=>b.classList.toggle('active', b.dataset.tab===tab));
+      Object.entries(panels).forEach(([k,v])=> v.classList.toggle('hidden', k!==tab));
+      document.getElementById('banner').style.display = 'none';
+    }
+    tabs.forEach(b=>b.addEventListener('click',()=>switchTo(b.dataset.tab)));
+    document.querySelectorAll('[data-tab-switch]').forEach(a=>a.addEventListener('click',()=>switchTo(a.dataset.tabSwitch)));
+
+    const banner=document.getElementById('banner');
+    function showBanner(msg,type){
+      banner.textContent=msg;
+      banner.className=`banner ${type}`;
+    }
+
+    document.getElementById('loginBtn').addEventListener('click',async()=>{
+      const email=document.getElementById('loginEmail').value;
+      const pass=document.getElementById('loginPassword').value;
+      try{
+        await auth.signInWithEmailAndPassword(email,pass);
+        window.location.href = "home.html"; // ✅ إعادة التوجيه بعد تسجيل الدخول
+      } catch(e){
+        showBanner('خطأ: '+e.message,'error');
+      }
+    });
+
+    document.getElementById('registerBtn').addEventListener('click',async()=>{
+      const fn=document.getElementById('firstName').value;
+      const ln=document.getElementById('lastName').value;
+      const email=document.getElementById('regEmail').value;
+      const dob=document.getElementById('dob').value;
+      const pass=document.getElementById('regPassword').value;
+      const conf=document.getElementById('regConfirm').value;
+      document.getElementById('passError').classList.add('hidden');
+      document.getElementById('matchError').classList.add('hidden');
+      if(pass.length<6){document.getElementById('passError').classList.remove('hidden');return;}
+      if(pass!==conf){document.getElementById('matchError').classList.remove('hidden');return;}
+      try{
+        const cred=await auth.createUserWithEmailAndPassword(email,pass);
+        await db.ref('users/'+cred.user.uid).set({firstName:fn,lastName:ln,email,dob});
+        showBanner('تم إنشاء الحساب بنجاح','success');
+        switchTo('login');
+      } catch(e){
+        showBanner('خطأ: '+e.message,'error');
+      }
+    });
+
+    document.getElementById('resetBtn').addEventListener('click',async()=>{
+      const email=document.getElementById('resetEmail').value;
+      try{
+        await auth.sendPasswordResetEmail(email);
+        showBanner('تم إرسال رابط استعادة كلمة المرور إلى بريدك','success');
+      } catch(e){
+        showBanner('خطأ: '+e.message,'error');
+      }
+    });
+  </script>
+</body>
+</html>
